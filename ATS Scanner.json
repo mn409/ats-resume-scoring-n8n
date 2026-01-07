@@ -1,0 +1,349 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1cea6879-bf24-48a3-9a02-fad247f30d67",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1lACJ4Dg6ouTpkY_cTeRHE98frh0qXlyJ",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "122ea000-67b6-4007-b9f5-5b834a79cf36",
+      "name": "JD- file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "M0VBIR5rZBgjWgyf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "name contains 'Resume'",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1Ms-BJ49jRIlrv1R38o-XxKpdVbz1bTCQ",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "c2a89e62-8271-41f3-bd14-fd9dee2baa7d",
+      "name": "resume",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "M0VBIR5rZBgjWgyf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "3d74cef0-e102-4e99-af1e-e7eedaa62544",
+      "name": "Download resume ",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "M0VBIR5rZBgjWgyf",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "1f1dd8f6-fdab-44f2-b677-6b77a4939c38",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an ATS resume parser.\n\nFrom the resume text below, extract the following fields\nand return ONLY valid JSON.\n\nFields:\n- Candidate Name\n- Email\n- Phone\n- Resume File\n- Score\n- Remarks\n\nRules:\n- Output JSON only\n- Do not add explanations\n- Use empty string \"\" if not found\n\nResume text:\n{{ $json.text }}\n",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.8,
+      "position": [
+        1056,
+        -16
+      ],
+      "id": "08df2a10-2e55-4f45-b942-0e1affd9ebbb",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        976,
+        256
+      ],
+      "id": "6f5d74c8-e2c8-4aa9-a46c-86f46f1a3f66",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Zm9QnJZuxbUUo6ar",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Candidate Name\": \"string\",\n  \"Email\": \"string\",\n  \"Phone\": \"string\",\n  \"Resume File\": \"string\",\n  \"Score\": \"number\",\n  \"Remarks\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1200,
+        192
+      ],
+      "id": "9a20f9cc-14bf-4486-9374-a7bdc7cc0ba0",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "=18k8VGsPx8bQMaxbPuTIRr0qNfHj-UvHt",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=1S9-imEMEGM82quSNponaiLZOd7pco_IuARq33RRffvk",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1616,
+        -16
+      ],
+      "id": "b0d8c193-b73e-437f-8a0e-21e30a263ebe",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kEry4n38c9NfK6JQ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cd61a3ec-3649-4367-9cb0-9ec3f5bead51",
+              "name": "output['Candidate Name']",
+              "value": "{{ $node[\"Search files and folders\"].json[\"name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "35089d5d-cdf6-4280-afdf-04e0b076fbc8",
+              "name": "={{ $json.output.Score }}Score",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "0a3f3152-eede-4a68-bf9d-391bdc28f88e",
+              "name": "output['Resume File']",
+              "value": "{{ $node[\"Search files and folders\"].json[\"id\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1408,
+        -16
+      ],
+      "id": "e3559022-6a56-4928-ae91-de4ced222b8d",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "JD- file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JD- file": {
+      "main": [
+        [
+          {
+            "node": "resume",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "resume": {
+      "main": [
+        [
+          {
+            "node": "Download resume ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download resume ": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "86030a72-6d40-46b7-8250-47d35f447ecc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e5f547eec467993784b69569476296eaf8d66179a17bb45e699def396e6e9137"
+  },
+  "id": "aWkxctfrB7vPeULS",
+  "tags": []
+}
