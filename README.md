@@ -8,8 +8,6 @@ The system ingests resumes from a Drive folder, extracts candidate details using
 
 This repository is intended for **portfolio and demo purposes**.
 
-
-
 ---
 
 ## What this automation does
