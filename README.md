@@ -23,8 +23,8 @@ This repository is intended for **portfolio and demo purposes**.
 ## Architecture (high level)
 
 1. Manual trigger in n8n
-2. Google Drive — download JD
-3. Google Drive — list & download resumes
+2. Google Drive - download Job Description
+3. Google Drive - list & download resumes
 4. Extract text from resume files
 5. LLM parsing & scoring (Gemini)
 6. Manual QA step (Edit Fields)
@@ -153,14 +153,3 @@ This project demonstrates:
 * Workflow automation with n8n
 * LLM prompt design for structured extraction
 * Practical handling of API limits and failures
-
----
-
-## License
-
-This project is for educational and portfolio use only.
-
----
-
-If you want to reproduce this demo, follow the steps above and use your own sample resumes.
-
