@@ -153,3 +153,7 @@ This project demonstrates:
 * Workflow automation with n8n
 * LLM prompt design for structured extraction
 * Practical handling of API limits and failures
+
+## Reference
+
+PRD: https://ludicrous-bovid-bb9.notion.site/PRD-Automated-ATS-Resume-Scoring-Workflow-2e1e21a45b4e80078043f1468f4d84c0
